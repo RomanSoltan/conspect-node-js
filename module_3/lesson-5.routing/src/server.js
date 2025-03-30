@@ -44,7 +44,7 @@ export const startServer = () => {
     });
   });
 
-  // Middleware для обробких помилок (приймає 4 аргументи)
+  // Middleware для обробки помилок (приймає 4 аргументи)
   app.use((err, req, res, next) => {
     res.status(500).json({
       message: 'Something went wrong',
