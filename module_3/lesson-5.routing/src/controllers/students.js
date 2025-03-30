@@ -1,3 +1,5 @@
+// 1. Імпортуємо функцію з бібліотеки
+import createHttpError from 'http-errors';
 import { getAllStudents, getStudentById } from '../services/students.js';
 
 export const getStudentsController = async (req, res) => {
@@ -10,14 +12,14 @@ export const getStudentsController = async (req, res) => {
   });
 };
 
-export const getStudentByIdController = async (req, res, next) => {
+export const getStudentByIdController = async (req, res) => {
   const { studentId } = req.params;
   const student = await getStudentById(studentId);
 
   // Відповідь, якщо контакт не знайдено
   if (!student) {
-    next(new Error('Student not found'));
-    return;
+    // 2. Створюємо та налаштовуємо помилку
+    throw createHttpError(404, 'Student not found');
   }
 
   // Відповідь, якщо контакт знайдено
