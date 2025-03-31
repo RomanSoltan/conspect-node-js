@@ -14,3 +14,11 @@ export const createStudent = async (payload) => {
   const student = await StudentsCollection.create(payload);
   return student;
 };
+
+export const deleteStudent = async (studentId) => {
+  const student = await StudentsCollection.findOneAndDelete({
+    _id: studentId,
+  });
+
+  return student;
+};

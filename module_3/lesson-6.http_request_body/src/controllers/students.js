@@ -2,6 +2,7 @@
 import createHttpError from 'http-errors';
 import {
   createStudent,
+  deleteStudent,
   getAllStudents,
   getStudentById,
 } from '../services/students.js';
@@ -42,4 +43,17 @@ export const createStudentController = async (req, res) => {
     message: `Successfully created a student!`,
     data: student,
   });
+};
+
+export const deleteStudentController = async (req, res, next) => {
+  const { studentId } = req.params;
+
+  const student = await deleteStudent(studentId);
+
+  if (!student) {
+    next(createHttpError(404, 'Student not found'));
+    return;
+  }
+
+  res.status(204).send();
 };
