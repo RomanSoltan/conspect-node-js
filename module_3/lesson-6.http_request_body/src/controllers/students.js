@@ -1,6 +1,10 @@
 // 1. Імпортуємо функцію з бібліотеки
 import createHttpError from 'http-errors';
-import { getAllStudents, getStudentById } from '../services/students.js';
+import {
+  createStudent,
+  getAllStudents,
+  getStudentById,
+} from '../services/students.js';
 
 export const getStudentsController = async (req, res) => {
   const students = await getAllStudents();
@@ -26,6 +30,16 @@ export const getStudentByIdController = async (req, res) => {
   res.json({
     status: 200,
     message: `Successfully found student with id ${studentId}`,
+    data: student,
+  });
+};
+
+export const createStudentController = async (req, res) => {
+  const student = await createStudent(req.body);
+
+  res.status(201).json({
+    status: 201,
+    message: `Successfully created a student!`,
     data: student,
   });
 };

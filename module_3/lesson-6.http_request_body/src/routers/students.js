@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  createStudentController,
   getStudentByIdController,
   getStudentsController,
 } from '../controllers/students.js';
@@ -12,5 +13,7 @@ router.get('/students', ctrlWrapper(getStudentsController));
 
 // Маршрут для обробки GET-запитів на '/students:studentId'
 router.get('/students/:studentId', ctrlWrapper(getStudentByIdController));
+
+router.post('/students', ctrlWrapper(createStudentController));
 
 export default router;
