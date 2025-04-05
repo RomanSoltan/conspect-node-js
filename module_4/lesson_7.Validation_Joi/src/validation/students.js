@@ -8,7 +8,7 @@ export const createStudentSchema = Joi.object({
     'string.max': 'Username should have at most {#limit} characters',
     'any.required': 'Username is required',
   }),
-  age: Joi.number().integer().min().max(16).required(),
+  age: Joi.number().integer().min(6).max(16).required(),
   gender: Joi.string().valid('male', 'female', 'other').required(),
   avgMark: Joi.number().min(2).max(12).required(),
   onDuty: Joi.boolean(),
@@ -25,7 +25,6 @@ const dataToValidate = {
 const validationResult = createStudentSchema.validate(dataToValidate, {
   abortEarly: false,
 });
-
 if (validationResult.error) {
   console.error(validationResult.error.message);
 } else {

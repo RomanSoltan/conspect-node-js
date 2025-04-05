@@ -8,16 +8,20 @@ import {
   upsertStudentController,
 } from '../controllers/students.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import { createStudentSchema } from '../validation/students.js';
 
 const router = Router();
 
-// Маршрут для обробки GET-запитів на '/students'
 router.get('/students', ctrlWrapper(getStudentsController));
 
-// Маршрут для обробки GET-запитів на '/students:studentId'
 router.get('/students/:studentId', ctrlWrapper(getStudentByIdController));
 
-router.post('/students', ctrlWrapper(createStudentController));
+router.post(
+  '/students',
+  validateBody(createStudentSchema),
+  ctrlWrapper(createStudentController),
+);
 
 router.delete('/students/:studentId', ctrlWrapper(deleteStudentController));
 
