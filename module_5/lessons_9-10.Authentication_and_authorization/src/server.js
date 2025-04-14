@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 // Імпортуємо роутер
-import studentsRouter from './routers/students.js';
+import router from './routers/index.js';
 
 import { getEnvVar } from './utils/getEnvVar.js';
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -38,7 +38,7 @@ export const startServer = () => {
   });
 
   // Додаємо роутер до app як middleware
-  app.use(studentsRouter);
+  app.use(router);
 
   // обробка неіснуючого маршруту
   app.use('*', notFoundHandler);
