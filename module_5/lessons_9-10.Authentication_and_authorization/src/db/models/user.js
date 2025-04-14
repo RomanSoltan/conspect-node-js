@@ -9,4 +9,12 @@ const usersSchema = new Schema(
   { timestamps: true, versionKey: false },
 );
 
+// Метод toJSON() викликається тоді, коли обʼєкт серіалізується
+// (перетворюється на JSON) під час виклику JSON.stringify() або res.json().
+usersSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
+
 export const UsersCollection = model('users', usersSchema);
