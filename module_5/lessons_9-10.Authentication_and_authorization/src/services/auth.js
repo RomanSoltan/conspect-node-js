@@ -59,3 +59,46 @@ export const loginUser = async (payload) => {
 export const logoutUser = async (sessionId) => {
   await SessionsCollection.deleteOne({ _id: sessionId });
 };
+
+const createSession = () => {
+  const accessToken = randomBytes(30).toString('base64');
+  const refreshToken = randomBytes(30).toString('base64');
+  return {
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+    refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
+  };
+};
+
+// Функція refreshUsersSession обробляє запит на оновлення сесії користувача, перевіряє наявність і термін дії існуючої сесії, генерує нову сесію та зберігає її в базі даних.
+export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
+  // Пошук існуючої сесії:
+  const session = await SessionsCollection.findOne({
+    _id: sessionId,
+    refreshToken,
+  });
+
+  if (!session) {
+    throw createHttpError(401, 'Session not found');
+  }
+
+  // Перевірка терміну дії токена сесії
+  const isSessionTokenExpired =
+    new Date() > new Date(session.refreshTokenValidUntil);
+
+  if (isSessionTokenExpired) {
+    throw createHttpError(401, 'Session token expired');
+  }
+
+  // Створення нової сесії:
+  const newSession = createSession();
+
+  await SessionsCollection.deleteOne({ _id: sessionId, refreshToken });
+
+  // Збереження нової сесії в базі даних:
+  return await SessionsCollection.create({
+    userId: session.userId,
+    ...newSession,
+  });
+};
