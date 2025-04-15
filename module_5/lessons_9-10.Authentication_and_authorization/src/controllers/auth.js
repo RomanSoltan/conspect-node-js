@@ -1,3 +1,4 @@
+import { ONE_DAY } from '../constants/index.js';
 import { loginUser, registerUser } from '../services/auth.js';
 
 export const registerUserController = async (req, res) => {
@@ -10,8 +11,28 @@ export const registerUserController = async (req, res) => {
   });
 };
 
+// Таким чином, функція loginUserController обробляє HTTP-запит на вхід користувача, викликає функцію аутентифікації loginUser, встановлює куки для збереження токенів та ідентифікатора сесії, і відправляє клієнту відповідь з інформацією про успішний вхід та токеном доступу.
 export const loginUserController = async (req, res) => {
-  await loginUser(req.body);
+  // виконує процес аутентифікації і повертає об'єкт сесії
+  const session = await loginUser(req.body);
 
-  // далі ми доповнимо цей контролер
+  res.cookie('refreshToken', session.refreshToken, {
+    // доступний тільки через HTTP-запити
+    httpOnly: true,
+    // має термін дії один день.
+    expires: new Date(Date.now() + ONE_DAY),
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+  });
+
+  // відповідь клієнту
+  res.json({
+    status: 200,
+    message: 'Successfully logged in an user!',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
 };
