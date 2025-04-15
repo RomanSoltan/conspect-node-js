@@ -2,6 +2,7 @@ import express from 'express';
 
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 // Імпортуємо роутер
 import router from './routers/index.js';
 
@@ -9,7 +10,6 @@ import { getEnvVar } from './utils/getEnvVar.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { logger } from './middlewares/logger.js';
-import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -30,7 +30,7 @@ export const startServer = () => {
   app.use(cors());
 
   // Для роботи із куками
-  app.use(cookieParser);
+  app.use(cookieParser());
 
   // app.use(logger);
 
