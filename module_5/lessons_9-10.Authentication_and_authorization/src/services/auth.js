@@ -1,6 +1,9 @@
+import { randomBytes } from 'crypto';
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import { UsersCollection } from '../db/models/user.js';
+import { SessionsCollection } from '../db/models/session.js';
+import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js';
 
 export const registerUser = async (payload) => {
   // Нам варто перевіряти email на унікальність під
@@ -18,18 +21,37 @@ export const registerUser = async (payload) => {
   });
 };
 
+// створимо функціонал по створенню сесій
+//функція забезпечує аутентифікацію користувача, перевіряє його дані для входу,
+// видаляє попередню сесію, генерує нові токени та створює нову сесію в базі даних.
 export const loginUser = async (payload) => {
+  // шукає користувача в базі даних за наданою електронною поштою
   const user = await UsersCollection.findOne({ email: payload.email });
   if (!user) {
-    throw createHttpError(401, 'User not found');
+    throw createHttpError(404, 'User not found');
   }
 
-  // Порівнюємо хеші паролів
+  // порівнює введений користувачем пароль з хешованим паролем, збереженим у базі даних
   const isEqual = await bcrypt.compare(payload.password, user.password);
 
   if (!isEqual) {
     throw createHttpError(401, 'Unauthorized');
   }
 
-  // далі ми доповнемо цей сервіс
+  // видаляє попередню сесію користувача, якщо така існує, з колекції сесій.
+  // для уникнення конфліктів з новою сесією.
+  await SessionsCollection.deleteOne({ userId: user._id });
+
+  // генеруються нові токени доступу та оновлення.
+  const accessToken = randomBytes(30).toString('base64');
+  const refreshToken = randomBytes(30).toString('base64');
+
+  //  створює нову сесію в базі даних
+  return await SessionsCollection.create({
+    userId: user._id,
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+    refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
+  });
 };
