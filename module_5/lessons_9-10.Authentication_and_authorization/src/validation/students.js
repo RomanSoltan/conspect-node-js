@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { isValidObjectId } from 'mongoose';
 
 // Оголошення схеми з кастомізованими повідомленнями
 export const createStudentSchema = Joi.object({
@@ -12,6 +13,12 @@ export const createStudentSchema = Joi.object({
   gender: Joi.string().valid('male', 'female', 'other').required(),
   avgMark: Joi.number().min(2).max(12).required(),
   onDuty: Joi.boolean(),
+  parentId: Joi.string().custom((value, helper) => {
+    if (value && !isValidObjectId(value)) {
+      return helper.message('Parent id should be a valid mongo id');
+    }
+    return true;
+  }),
 });
 
 const dataToValidate = {

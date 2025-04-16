@@ -26,6 +26,11 @@ const studentsSchema = new Schema(
       required: true,
       default: false,
     },
+    parentId: {
+      // нова властивість
+      type: Schema.Types.ObjectId,
+      ref: 'users',
+    },
   },
   {
     timestamps: true,
