@@ -1,7 +1,7 @@
 {
-  "name": "lesson_8.pagination",
+  "name": "lesson_11.SMTP and Pop3",
   "version": "1.0.0",
-  "description": "lesson_8.pagination",
+  "description": "lesson_11.SMTP and Pop3",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "handlebars": "^4.7.8",
     "http-errors": "^2.0.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
