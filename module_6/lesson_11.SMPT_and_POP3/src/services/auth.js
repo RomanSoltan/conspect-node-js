@@ -1,6 +1,10 @@
 import { randomBytes } from 'crypto';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
+import { SMTP } from '../constants/index.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { sendEmail } from '../utils/sendMail.js';
 import { UsersCollection } from '../db/models/user.js';
 import { SessionsCollection } from '../db/models/session.js';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js';
@@ -100,5 +104,36 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   return await SessionsCollection.create({
     userId: session.userId,
     ...newSession,
+  });
+};
+
+export const requestResetToken = async (email) => {
+  const user = await UsersCollection.findOne({ email });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  // створює токен скидання пароля
+  const resetToken = jwt.sign(
+    // ідентифікатор користувача та його електронну пошту
+    {
+      sub: user._id,
+      email,
+    },
+    //  секретом JWT
+    getEnvVar('JWT_SECRET'),
+    // термін дії 15 хвилин
+    {
+      expiresIn: '15m',
+    },
+  );
+
+  // надсилає електронний лист користувачу
+  await sendEmail({
+    from: getEnvVar(SMTP.SMTP_FROM),
+    to: email,
+    subject: 'Reset your password',
+    html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
   });
 };

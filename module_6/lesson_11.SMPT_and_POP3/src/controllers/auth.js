@@ -4,6 +4,7 @@ import {
   logoutUser,
   refreshUsersSession,
   registerUser,
+  requestResetToken,
 } from '../services/auth.js';
 
 export const registerUserController = async (req, res) => {
@@ -87,5 +88,16 @@ export const refreshUsersSessionConteroller = async (req, res) => {
     data: {
       accessToken: session.accessToken,
     },
+  });
+};
+
+// Створимо контролер, який буде обробляти запит на зміну пароля:
+export const requestResetEmailController = async (req, res) => {
+  await requestResetToken(req.body.email);
+
+  res.json({
+    status: 200,
+    message: 'Reset password email was successfully sent!',
+    data: {},
   });
 };
