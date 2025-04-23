@@ -27,10 +27,11 @@ const studentsSchema = new Schema(
       default: false,
     },
     parentId: {
-      // нова властивість
       type: Schema.Types.ObjectId,
       ref: 'users',
     },
+    // нова властивість
+    photo: { type: String },
   },
   {
     timestamps: true,
