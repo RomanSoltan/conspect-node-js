@@ -96,6 +96,9 @@ export const upsertStudentController = async (req, res, next) => {
 
 export const patchStudentController = async (req, res, next) => {
   const { studentId } = req.params;
+  const photo = req.file;
+  console.log(photo);
+
   const result = await updateStudent(studentId, req.body);
 
   if (!result) {
