@@ -1,20 +1,24 @@
 {
-  "name": "lesson_13.Google_authentication",
+  "name": "lesson_14.Swagger",
   "version": "1.0.0",
-  "description": "lesson_13.Google_authentication",
+  "description": "lesson_14.Swagger",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint src/**/*.js",
     "start": "./src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build-docs",
+    "build-docs": "redocly bundle docs/openapi.yaml --ext json -o docs/swagger.json",
+    "preview-docs": "redocly preview-docs"
   },
   "keywords": [],
   "author": "Roman Soltan <romabandit88@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.23.0",
+    "@redocly/cli": "^1.34.2",
     "eslint": "^9.23.0",
     "globals": "^16.0.0",
     "nodemon": "^3.1.9",
